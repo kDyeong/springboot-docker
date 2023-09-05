@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>상세 조회</title>
+    <script th:inline="javascript">
+        function backTolist(frm) {
+            frm.action = /*[[@{/board/list}]]*/
+            frm.submit();
+        }
+        function fn_enable(frm) {
+            document.querySelector('#i_title').disabled = false;
+            document.querySelector('#i_content').disabled = false;
+            document.querySelector('#tr_btn').style.display = 'none';
+            document.querySelector('#tr_btn_modify').style.display = 'table-row';
+        }
+        function fn_modify_article(frm) {
+            frm.action = /*[[@{/board/edit}]]*/
+            frm.submit();
+        }
+        function fn_remove(url, no) {
+            let form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", url);
+            let input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "articleNo");
+            input.setAttribute("value", no);
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+    <style>
+        #tr_btn_modify {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <form name="articleForm" method="post" action="">
+        <table border="0" align="center">
+            <tbody>
+                <tr>
+                    <td width="150" align="center" bgcolor="#FF9933">글번호</td>
+                    <td>
+                        <input type="text" th:value="${article.article_no}" disabled>
+                        <input type="hidden" th:value="${article.article_no}" name="articleNO">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" align="center" bgcolor="#FF9933">작성자</td>
+                    <td>
+                        <input type="text" th:value="${article.write_id}" name="writer" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" align="center" bgcolor="#FF9933">제목</td>
+                    <td>
+                        <input type="text" th:value="${article.title}" name="title" id="i_title" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" align="center" bgcolor="#FF9933">내용</td>
+                    <td>
+                        <textarea rows="20" cols="60" name="content" id="i_content" disabled>[[${article.content}]]
+                        </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="20%" align="center" bgcolor="#FF9933">작성일</td>
+                    <td>
+                        <input type="text" th:value="${article.write_date}" disabled>
+                    </td>
+                </tr>
+                <tr id="tr_btn">
+                    <td colspan="2" align="center">
+                        <input type="button" value="수정" onclick="fn_enable(articleForm)">
+                        <input type="button" value="삭제" th:onclick="|fn_remove('@{/board/remove}', '${article.article_no}')|">
+                        <input type="button" value="목록보기" onclick="backTolist(articleForm)">
+                    </td>
+                </tr>
+                <tr id="tr_btn_modify">
+                    <td colspan="2" align="center">
+                        <input type="button" value="저장" onclick="fn_modify_article(articleForm)">
+                        <input type="button" value="취소" onclick="backTolist(articleForm)">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</body>
+
+</html>
